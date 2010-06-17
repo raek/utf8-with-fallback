@@ -18,4 +18,4 @@ For an example program, see `examples/Mixed2Utf8.java`.
 
 Copyright (C) 2010 Rasmus Svensson
 
-This library is distributed under the GNU Lesser General Public License v3.0 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html) and the Eclipse Public License v1.0 (http://www.eclipse.org/org/documents/epl-v10.html). See files lgpl-3.0.txt and epl-v10.html respectively.
+This library is distributed under the GNU Lesser General Public License v3.0 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html) and the Eclipse Public License v1.0 (http://www.eclipse.org/org/documents/epl-v10.html).
