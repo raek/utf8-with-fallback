@@ -89,6 +89,13 @@ public class Utf8WithFallbackCharsetDecoderTest {
 	}
 	
 	@Test
+	public void testDecodingSolitaryUtf8ContinuationByte() throws UnsupportedEncodingException, CharacterCodingException {
+		String s = "\u0094";
+		ByteBuffer buffer = ByteBuffer.wrap(s.getBytes("ISO-8859-1"));
+		assertEquals(s, decoder.decode(buffer).toString());
+	}
+	
+	@Test
 	public void testMedialBufferOverflow() {
 		// Input the first two bytes of a three byte sequence followed by ASCII 'a'.
 		// Provide a one char buffer, so that overflow will occur when the first two
