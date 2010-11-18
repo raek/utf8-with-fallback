@@ -5,7 +5,7 @@ import java.nio.charset.spi.CharsetProvider;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Utf8WithFallbackCharsetProvider extends CharsetProvider {
+public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 	
 	private static final ArrayList<Charset> providedCharsets;
 	
@@ -18,7 +18,7 @@ public class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 	}
 
 	@Override
-	public Charset charsetForName(String charsetName) {
+	public Charset charsetForName(final String charsetName) {
 		for (Charset providedCharset : providedCharsets) {
 			if (providedCharset.name().equalsIgnoreCase(charsetName)) {
 				return providedCharset;

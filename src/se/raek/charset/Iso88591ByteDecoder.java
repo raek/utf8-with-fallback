@@ -1,8 +1,9 @@
 package se.raek.charset;
 
-public class Iso88591ByteDecoder implements NonAsciiByteDecoder {
+public final class Iso88591ByteDecoder implements NonAsciiByteDecoder {
 
-	public char decodeByte(byte b) {
+	@Override
+	public char decodeByte(final byte b) {
 		return (char) ((int) b & 0xFF);
 	}
 

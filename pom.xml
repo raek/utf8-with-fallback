@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.clojars.raek</groupId>
   <artifactId>utf8-with-fallback</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <url>http://github.com/raek/utf8-with-fallback</url>
   <description>A Java charset provider for decoding streams that contain mixed UTF-8 and ISO 8859-1 encoded text</description>
   <licenses>

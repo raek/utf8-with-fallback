@@ -5,7 +5,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.util.Locale;
 
-public class Utf8WithIso88591FallbackCharset extends Charset {
+public final class Utf8WithIso88591FallbackCharset extends Charset {
 	
 	private static final NonAsciiByteDecoder byteDecoder = new Iso88591ByteDecoder();
 	private static final String canonicalName = "X-UTF-8_with_ISO-8859-1_fallback";
@@ -24,7 +24,7 @@ public class Utf8WithIso88591FallbackCharset extends Charset {
 	}
 
 	@Override
-	public boolean contains(Charset cs) {
+	public boolean contains(final Charset cs) {
 		return utf8Charset.contains(cs);
 	}
 
@@ -34,7 +34,7 @@ public class Utf8WithIso88591FallbackCharset extends Charset {
 	}
 
 	@Override
-	public String displayName(Locale locale) {
+	public String displayName(final Locale locale) {
 		return displaylName;
 	}	
 
