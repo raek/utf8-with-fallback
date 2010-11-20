@@ -12,6 +12,7 @@ public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 	static {
 		providedCharsets = new ArrayList<Charset>();
 		providedCharsets.add(new Utf8WithIso88591FallbackCharset());
+		providedCharsets.add(new Utf8WithWindows1252FallbackCharset());
 	}
 
 	public Utf8WithFallbackCharsetProvider() {
