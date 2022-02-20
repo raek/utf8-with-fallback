@@ -10,20 +10,21 @@ import java.nio.charset.CoderResult;
  * General charset decoder for ASCII-compatible single-byte charsets.
  */
 public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
-
 	/**
 	 * The decoder to fall back to when a byte sequence is not valid UTF-8.
 	 */
 	private final NonAsciiByteDecoder byteDecoder;
 
 	/**
-	 * Has the next byte already been read? If so, it is in {@link lookahead}.
+	 * Has the next byte already been read? If so, it is in {@link #lookahead}.
 	 */
 	private boolean lookaheadRead;
 
 	/**
-	 * Storage for lookahead byte. {@link peek} and {@link take} will use this
-	 * byte instead of reading one if {@link lookaheadRead} is true.
+	 * Storage for lookahead byte.
+	 *
+	 * {@link #peek(ByteBuffer)} and {@link #take(ByteBuffer)} will use this
+	 * byte instead of reading one if {@link #lookaheadRead} is true.
 	 */
 	private byte lookahead;
 
@@ -35,11 +36,9 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	/**
 	 * Returns the next byte from the input without consuming it.
 	 * 
-	 * May only be called when it is known that there is at least one byte
-	 * available.
+	 * May only be called when it is known that there is at least one byte available.
 	 * 
-	 * @param in
-	 *            The ByteBuffer to read from
+	 * @param in The ByteBuffer to read from
 	 * @return The next byte from the input
 	 */
 	private byte peek(final ByteBuffer in) {
@@ -54,22 +53,21 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	 * Returns the next byte from the input and removes it. May only be called
 	 * when it is know that there is at least one byte available.
 	 * 
-	 * @param in
-	 *            The ByteBuffer to read from
+	 * @param in The ByteBuffer to read from
 	 * @return The next byte from the input
 	 */
 	private byte take(final ByteBuffer in) {
 		if (lookaheadRead) {
 			lookaheadRead = false;
 			return lookahead;
-		} else {
-			return in.get();
 		}
+		return in.get();
 	}
 
 	public Utf8WithFallbackCharsetDecoder(final Charset cs,
-			final float averageCharsPerByte, final float maxCharsPerByte,
-			final NonAsciiByteDecoder byteDecoder) {
+										  final float averageCharsPerByte,
+										  final float maxCharsPerByte,
+										  final NonAsciiByteDecoder byteDecoder) {
 		super(cs, averageCharsPerByte, maxCharsPerByte);
 
 		this.byteDecoder = byteDecoder;
@@ -114,29 +112,25 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	 */
 	private interface State {
 		/**
-		 * Tells whether or not the state does not have any unfinished read or
+		 * Tells whether the state does not have any unfinished read or
 		 * write operations. If it does not, it is safe to stop decoding.
 		 * 
-		 * @return true if, and only if, it is safe to stop decoding in this
-		 *         state
+		 * @return true if, and only if, it is safe to stop decoding in this state
 		 */
 		boolean isFinal();
 
 		/**
 		 * Performs a state transition and returns the next state.
 		 * 
-		 * @param in
-		 *            the ByteBuffer to read from, if needed
-		 * @param out
-		 *            the CharBuffer to write to, if needed
+		 * @param in the ByteBuffer to read from, if needed
+		 * @param out the CharBuffer to write to, if needed
 		 * @return the next state
 		 */
 		State next(ByteBuffer in, CharBuffer out);
 
 		/**
 		 * Returns a state that will flush any characters held in this state, if
-		 * any, or a final state. The returned state should never attempt to
-		 * read.
+		 * any, or a final state. The returned state should never attempt to read.
 		 * 
 		 * @return a final state or state that will flush the remaining chars
 		 */
@@ -151,20 +145,22 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 
 		@Override
 		public State next(final ByteBuffer in, final CharBuffer out) {
-			byte b = take(in);
+			final byte b = take(in);
 			if (isAscii(b)) {
 				out.put(decodeAscii(b));
 				return this;
-			} else if (isTwoByteStart(b)) {
-				return new Partial(b);
-			} else if (isThreeByteStart(b)) {
-				return new Partial(b);
-			} else if (isFourByteStart(b)) {
-				return new Partial(b);
-			} else {
-				out.put(decodeFallback(b));
-				return this;
 			}
+			if (isTwoByteStart(b)) {
+				return new Partial(b);
+			}
+			if (isThreeByteStart(b)) {
+				return new Partial(b);
+			}
+			if (isFourByteStart(b)) {
+				return new Partial(b);
+			}
+			out.put(decodeFallback(b));
+			return this;
 		}
 
 		@Override
@@ -174,7 +170,7 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	}
 
 	private final class Partial implements State {
-		private ByteBuffer buffer;
+		private final ByteBuffer buffer;
 		private int value;
 
 		public Partial(final byte start) {
@@ -190,8 +186,7 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 				length = 4;
 				value = fourByteStartData(start);
 			} else {
-				length = -1;
-				assert false;
+				throw new IllegalArgumentException(String.format("Invalid start (%d)", start));
 			}
 
 			buffer = ByteBuffer.allocateDirect(length);
@@ -208,28 +203,23 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 			if (!isContinuation(peek(in))) {
 				buffer.flip();
 				return new FlushBytes(buffer);
-			} else {
-				byte b = take(in);
-				buffer.put(b);
-				value = addContinuationData(value, b);
-				if (buffer.hasRemaining()) {
-					return this;
-				} else {
-					int requiredLength = bytesRequired(value);
-					if (requiredLength == -1 || buffer.capacity() != requiredLength) {
-						buffer.flip();
-						return new FlushBytes(buffer);
-					} else {
-						char[] chars = Character.toChars(value);
-						out.put(chars[0]);
-						if (chars.length == 2) {
-							return new FlushSurrogate(chars[1]);
-						} else {
-							return new Start();
-						}
-					}
-				}
 			}
+			final byte b = take(in);
+			buffer.put(b);
+			value = addContinuationData(value, b);
+			if (buffer.hasRemaining()) {
+				return this;
+			}
+			final int requiredLength = bytesRequired(value);
+			if (requiredLength == -1 || buffer.capacity() != requiredLength) {
+				buffer.flip();
+				return new FlushBytes(buffer);
+			}
+			final char[] chars = Character.toChars(value);
+			out.put(chars[0]);
+			return chars.length == 2
+					? new FlushSurrogate(chars[1])
+					: new Start();
 		}
 
 		@Override
@@ -240,7 +230,7 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	}
 
 	private final class FlushBytes implements State {
-		private ByteBuffer buffer;
+		private final ByteBuffer buffer;
 
 		public FlushBytes(final ByteBuffer buffer) {
 			this.buffer = buffer;
@@ -256,9 +246,8 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 			out.put(decodeFallback(buffer.get()));
 			if (buffer.hasRemaining()) {
 				return this;
-			} else {
-				return new Start();
 			}
+			return new Start();
 		}
 
 		@Override
@@ -268,7 +257,7 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	}
 
 	private final class FlushSurrogate implements State {
-		private char c;
+		private final char c;
 
 		public FlushSurrogate(final char c) {
 			this.c = c;
@@ -317,8 +306,7 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 
 	private static boolean isTwoByteStart(byte b) {
 		// 0xC0 and 0xC1 only occurs in overlong encodings
-		// FIXME: restore check
-		return (((int) b & 0xE0) == 0xC0) && true;
+		return ((int) b & 0xE0) == 0xC0;
 	}
 
 	private static int twoByteStartData(byte b) {
@@ -344,15 +332,16 @@ public final class Utf8WithFallbackCharsetDecoder extends CharsetDecoder {
 	private static int bytesRequired(int codePoint) {
 		if (codePoint < 0x80 && codePoint >= 0) {
 			return 1;
-		} else if (codePoint < 0x800) {
-			return 2;
-		} else if (codePoint < 0x10000) {
-			return 3;
-		} else if (codePoint < 0x110000) {
-			return 4;
-		} else {
-			return -1;
 		}
+		if (codePoint < 0x800) {
+			return 2;
+		}
+		if (codePoint < 0x10000) {
+			return 3;
+		}
+		if (codePoint < 0x110000) {
+			return 4;
+		}
+		return -1;
 	}
-
 }

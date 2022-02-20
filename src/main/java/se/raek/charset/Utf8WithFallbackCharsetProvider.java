@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
-	
 	private static final ArrayList<Charset> providedCharsets;
 	
 	static {
-		providedCharsets = new ArrayList<Charset>();
+		providedCharsets = new ArrayList<>();
 		providedCharsets.add(new Utf8WithIso88591FallbackCharset());
 		providedCharsets.add(new Utf8WithWindows1252FallbackCharset());
 	}
@@ -20,11 +19,11 @@ public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 
 	@Override
 	public Charset charsetForName(final String charsetName) {
-		for (Charset providedCharset : providedCharsets) {
+		for (final Charset providedCharset : providedCharsets) {
 			if (providedCharset.name().equalsIgnoreCase(charsetName)) {
 				return providedCharset;
 			}
-			for (String providedName : providedCharset.aliases()) {
+			for (final String providedName : providedCharset.aliases()) {
 				if (providedName.equalsIgnoreCase(charsetName)) {
 					return providedCharset;
 				}
@@ -37,5 +36,4 @@ public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 	public Iterator<Charset> charsets() {
 		return providedCharsets.iterator();
 	}
-
 }

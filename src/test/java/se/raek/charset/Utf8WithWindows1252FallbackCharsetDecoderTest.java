@@ -1,35 +1,32 @@
 package se.raek.charset;
 
-import static org.junit.Assert.*;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class Utf8WithWindows1252FallbackCharsetDecoderTest {
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 
+import static org.junit.Assert.assertEquals;
+
+public class Utf8WithWindows1252FallbackCharsetDecoderTest {
 	private CharsetDecoder decoder;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		decoder = new Utf8WithWindows1252FallbackCharset().newDecoder();
 	}
 
 	@Test
-	public void testDecodingAscii() throws UnsupportedEncodingException,
-			CharacterCodingException {
-		ByteBuffer buffer = ByteBuffer.wrap("abc".getBytes("US-ASCII"));
+	public void testDecodingAscii() throws CharacterCodingException {
+		final ByteBuffer buffer = ByteBuffer.wrap("abc".getBytes(StandardCharsets.US_ASCII));
 		assertEquals("abc", decoder.decode(buffer).toString());
 	}
 	
 	@Test
 	public void testDecodingControlCharReplacements() throws CharacterCodingException {
-		byte[] testBytes = new byte[32];
+		final byte[] testBytes = new byte[32];
 		for (int i = 0; i < testBytes.length; i++) {
 			testBytes[i] = (byte) (i + 0x80);
 		}
@@ -39,7 +36,7 @@ public class Utf8WithWindows1252FallbackCharsetDecoderTest {
 	
 	@Test
 	public void testDecodingIso88591Overlap() throws CharacterCodingException {
-		byte[] testBytes = new byte[32];
+		final byte[] testBytes = new byte[32];
 		for (int i = 0; i < testBytes.length; i++) {
 			testBytes[i] = (byte) (i + 0xC0);
 		}

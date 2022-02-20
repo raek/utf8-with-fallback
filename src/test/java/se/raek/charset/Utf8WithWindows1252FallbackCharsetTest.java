@@ -4,17 +4,17 @@ import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class Utf8WithWindows1252FallbackCharsetTest {
-	
 	private Charset charset;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		charset = new Utf8WithWindows1252FallbackCharset();
 	}
 
@@ -25,7 +25,7 @@ public class Utf8WithWindows1252FallbackCharsetTest {
 
 	@Test
 	public void containsCharset_utf8_true() {
-		assertTrue(charset.contains(Charset.forName("UTF-8")));
+		assertTrue(charset.contains(StandardCharsets.UTF_8));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class Utf8WithWindows1252FallbackCharsetTest {
 
 	@Test
 	public void newDecoder_always_correctClass() {
-		CharsetDecoder decoder = charset.newDecoder();
+		final CharsetDecoder decoder = charset.newDecoder();
 		assertEquals(Utf8WithFallbackCharsetDecoder.class, decoder.getClass());
 	}
 
@@ -48,5 +48,4 @@ public class Utf8WithWindows1252FallbackCharsetTest {
 	public void newEncoder_always_exceptionThrown() {
 		charset.newEncoder();
 	}
-
 }

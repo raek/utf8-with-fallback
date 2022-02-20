@@ -9,11 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class Utf8WithFallbackCharsetProviderTest {
-	
 	private Utf8WithFallbackCharsetProvider charsetProvider;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		charsetProvider = new Utf8WithFallbackCharsetProvider();
 	}
 	
@@ -44,15 +43,13 @@ public class Utf8WithFallbackCharsetProviderTest {
 
 	@Test
 	public void charsets_always_charsetPresent() {
-		boolean found = false;
-		Iterator<Charset> it = charsetProvider.charsets();
+		final Iterator<Charset> it = charsetProvider.charsets();
 		while (it.hasNext()) {
-			Charset charset = it.next();
+			final Charset charset = it.next();
 			if (charset.name().equalsIgnoreCase("X-UTF-8_with_ISO-8859-1_fallback")) {
-				found = true;
+				return;
 			}
 		}
-		assertTrue(found);
+		fail("Charset not found");
 	}
-
 }
