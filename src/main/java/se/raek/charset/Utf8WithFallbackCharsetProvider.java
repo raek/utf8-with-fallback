@@ -2,38 +2,33 @@ package se.raek.charset;
 
 import java.nio.charset.Charset;
 import java.nio.charset.spi.CharsetProvider;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
-	private static final ArrayList<Charset> providedCharsets;
-	
-	static {
-		providedCharsets = new ArrayList<>();
-		providedCharsets.add(new Utf8WithIso88591FallbackCharset());
-		providedCharsets.add(new Utf8WithWindows1252FallbackCharset());
-	}
+	private static final List<Charset> PROVIDED_CHARSETS = Arrays.asList(
+			new Utf8WithIso88591FallbackCharset(),
+			new Utf8WithIso885915FallbackCharset(),
+			new Utf8WithWindows1252FallbackCharset()
+	);
 
-	public Utf8WithFallbackCharsetProvider() {
+	private static final Map<String, Charset> PROVIDED_CHARSET_MAP = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+	static {
+		for (final Charset providedCharset : PROVIDED_CHARSETS) {
+			PROVIDED_CHARSET_MAP.putIfAbsent(providedCharset.name(), providedCharset);
+			for (final String alias : providedCharset.aliases()) {
+				PROVIDED_CHARSET_MAP.putIfAbsent(alias, providedCharset);
+			}
+		}
 	}
 
 	@Override
 	public Charset charsetForName(final String charsetName) {
-		for (final Charset providedCharset : providedCharsets) {
-			if (providedCharset.name().equalsIgnoreCase(charsetName)) {
-				return providedCharset;
-			}
-			for (final String providedName : providedCharset.aliases()) {
-				if (providedName.equalsIgnoreCase(charsetName)) {
-					return providedCharset;
-				}
-			}
-		}
-		return null;
+		return PROVIDED_CHARSET_MAP.get(charsetName);
 	}
 
 	@Override
 	public Iterator<Charset> charsets() {
-		return providedCharsets.iterator();
+		return PROVIDED_CHARSETS.iterator();
 	}
 }

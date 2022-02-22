@@ -10,7 +10,7 @@ public final class Windows1252ByteDecoder implements NonAsciiByteDecoder {
 
 	@Override
 	public char decodeByte(final byte b) {
-		final int i = (int) b & 0xFF;
+		final int i = Byte.toUnsignedInt(b);
 		if (i < 0x80 || i >= 0xA0) {
 			return (char) i;
 		}

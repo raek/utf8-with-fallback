@@ -6,13 +6,13 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-public final class Utf8WithWindows1252FallbackCharset extends Charset {
-	private static final NonAsciiByteDecoder BYTE_DECODER = new Windows1252ByteDecoder();
-	private static final String CANONICAL_NAME = "X-UTF-8_with_windows-1252_fallback";
-	private static final String[] ALIASES = {"X-UTF-8_with_cp1252_fallback"};
-	private static final String DISPLAY_NAME = "UTF-8 with windows-1252 fallback";
+public final class Utf8WithIso885915FallbackCharset extends Charset {
+	private static final NonAsciiByteDecoder BYTE_DECODER = new Iso885915ByteDecoder();
+	private static final String CANONICAL_NAME = "X-UTF-8_with_ISO-8859-15_fallback";
+	private static final String[] ALIASES = {"X-UTF-8_with_ISO-LATIN-9_fallback"};
+	private static final String DISPLAY_NAME = "UTF-8 with ISO-8859-15 fallback";
 
-	public Utf8WithWindows1252FallbackCharset() {
+	public Utf8WithIso885915FallbackCharset() {
 		super(CANONICAL_NAME, ALIASES);
 	}
 	

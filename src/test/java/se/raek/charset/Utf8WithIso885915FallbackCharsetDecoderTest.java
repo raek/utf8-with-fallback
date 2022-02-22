@@ -7,17 +7,20 @@ import org.junit.Test;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
 
-public class Utf8WithIso88591FallbackCharsetDecoderTest {
+public class Utf8WithIso885915FallbackCharsetDecoderTest {
+	private static final Charset FALLBACK_CHARSET = Charset.forName("ISO-8859-15");
+	
 	private CharsetDecoder decoder;
 
 	@Before
 	public void setUp() {
-		decoder = new Utf8WithIso88591FallbackCharset().newDecoder();
+		decoder = new Utf8WithIso885915FallbackCharset().newDecoder();
 	}
 
 	@Test
@@ -33,8 +36,8 @@ public class Utf8WithIso88591FallbackCharsetDecoderTest {
 	}
 
 	@Test
-	public void testDecodingIso88591() throws CharacterCodingException {
-		final ByteBuffer buffer = ByteBuffer.wrap("köttfärssås".getBytes(StandardCharsets.ISO_8859_1));
+	public void testDecodingIso885915() throws CharacterCodingException {
+		final ByteBuffer buffer = ByteBuffer.wrap("köttfärssås".getBytes(FALLBACK_CHARSET));
 		assertEquals("köttfärssås", decoder.decode(buffer).toString());
 	}
 
@@ -60,8 +63,8 @@ public class Utf8WithIso88591FallbackCharsetDecoderTest {
 	}
 
 	@Test
-	public void testDecodingUtf8FollowedByIso88591() throws CharacterCodingException {
-		// utf-8("åäö") + iso-8859-1("åäö")
+	public void testDecodingUtf8FollowedByIso885915() throws CharacterCodingException {
+		// utf-8("åäö") + iso-8859-15("åäö")
 		final byte[] bytes = {
 				(byte) 0xC3, (byte) 0xA5, (byte) 0xC3, (byte) 0xA4, (byte) 0xC3, (byte) 0xB6,
 				(byte) 0xE5, (byte) 0xE4, (byte) 0xF6
@@ -71,8 +74,19 @@ public class Utf8WithIso88591FallbackCharsetDecoderTest {
 	}
 
 	@Test
-	public void testDecodingIso88591FollowedByUtf8() throws CharacterCodingException {
-		// iso-8859-1("åäö") + utf-8("åäö")
+	public void testDecodingUtf8EmojiFollowedByIso885915() throws CharacterCodingException {
+		// utf-8("👨ẞ") + iso-8859-15("¢£€")
+		final byte[] bytes = {
+				(byte) 0xF0, (byte) 0x9F, (byte) 0x91, (byte) 0xA8, (byte) 0xE1, (byte) 0xBA, (byte) 0x9E,
+				(byte) 0xA2, (byte) 0xA3, (byte) 0xA4
+		};
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		assertEquals("\uD83D\uDC68ẞ¢£€", decoder.decode(buffer).toString());
+	}
+
+	@Test
+	public void testDecodingIso885915FollowedByUtf8() throws CharacterCodingException {
+		// iso-8859-15("åäö") + utf-8("åäö")
 		final byte[] bytes = {
 				(byte) 0xE5, (byte) 0xE4, (byte) 0xF6,
 				(byte) 0xC3, (byte) 0xA5, (byte) 0xC3, (byte) 0xA4, (byte) 0xC3, (byte) 0xB6
@@ -83,55 +97,55 @@ public class Utf8WithIso88591FallbackCharsetDecoderTest {
 
 	@Ignore
 	@Test
-	public void testDecodingIso88591FollowedByUtf8Fail() throws CharacterCodingException {
-		// iso-8859-1("å½¤") + utf-8("å½¤")
+	public void testDecodingIso885915FollowedByUtf8Fail() throws CharacterCodingException {
+		// iso-8859-15("åœ€") + utf-8("åœ€")
 		final byte[] bytes = {
 				(byte) 0xE5, (byte) 0xBD, (byte) 0xA4,
-				(byte) 0xC3, (byte) 0xA5, (byte) 0xC2, (byte) 0xBD, (byte) 0xC2, (byte) 0xA4
+				(byte) 0xC3, (byte) 0xA5, (byte) 0xC5, (byte) 0x93, (byte) 0xE2, (byte) 0x82, (byte) 0xAC
 		};
 		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-		assertEquals("å½¤å½¤", decoder.decode(buffer).toString()); // 彤å½¤
+		assertEquals("åœ€åœ€", decoder.decode(buffer).toString()); // 彤åœ€
 	}
 
 	@Test
 	public void testDecodingIllegalUtf8Bytes() throws CharacterCodingException {
 		final String s = "üýþÿ";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 
 	@Test
 	public void testDecodingSolitaryUtf8ContinuationByte() throws CharacterCodingException {
 		final String s = "\u0094";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 
 	@Test
 	public void testDecodingTwoByteEncodedAscii() throws CharacterCodingException {
 		final String s = "\u00C1\u0081";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 
 	@Test
 	public void testDecodingThreeByteEncodedAscii() throws CharacterCodingException {
 		final String s = "\u00E0\u0081\u0081";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 
 	@Test
 	public void testDecodingFourByteEncodedAscii() throws CharacterCodingException {
 		final String s = "\u00F0\u0080\u0081\u0081";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 
 	@Test
 	public void testDecodingOutOfRangeUnicodeCodePoint() throws CharacterCodingException {
 		final String s = "\u00F5\u0080\u0080\u0080";
-		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.ISO_8859_1));
+		final ByteBuffer buffer = ByteBuffer.wrap(s.getBytes(FALLBACK_CHARSET));
 		assertEquals(s, decoder.decode(buffer).toString());
 	}
 

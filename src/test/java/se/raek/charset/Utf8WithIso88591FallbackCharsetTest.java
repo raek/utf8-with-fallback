@@ -19,33 +19,33 @@ public class Utf8WithIso88591FallbackCharsetTest {
 	}
 
 	@Test
-	public void canEncode_always_false() {
+	public void canEncodeAlwaysFalse() {
 		assertFalse(charset.canEncode());
 	}
 
 	@Test
-	public void containsCharset_utf8_true() {
+	public void containsCharsetUtf8True() {
 		assertTrue(charset.contains(StandardCharsets.UTF_8));
 	}
 
 	@Test
-	public void displayName_always_notNull() {
+	public void displayNameAlwaysNotNull() {
 		assertNotNull(charset.displayName());
 	}
 
 	@Test
-	public void displayNameLocale_always_notNull() {
+	public void displayNameLocaleAlwaysNotNull() {
 		assertNotNull(charset.displayName(Locale.getDefault()));
 	}
 
 	@Test
-	public void newDecoder_always_correctClass() {
+	public void newDecoderAlwaysCorrectClass() {
 		final CharsetDecoder decoder = charset.newDecoder();
 		assertEquals(Utf8WithFallbackCharsetDecoder.class, decoder.getClass());
 	}
 
 	@Test(expected=UnsupportedOperationException.class)
-	public void newEncoder_always_exceptionThrown() {
+	public void newEncoderAlwaysExceptionThrown() {
 		charset.newEncoder();
 	}
 }

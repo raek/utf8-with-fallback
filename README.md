@@ -1,16 +1,17 @@
 # UTF-8 with Fallback
 
-Current version: v1.1.0
+Current version: v1.2.0
 
 ## What is this?
 
-Sometimes in protocols and formats such as IRC and bad HTML, pieces of text with different encoding are mixed in the same byte stream. This library provides charsets to the JVM platform that can understand both the UTF-8 and the ISO 8859-1 (or windows-1252) encodings and choose the one that makes most sense.
+Sometimes in protocols and formats such as IRC and bad HTML, pieces of text with different encoding are mixed in the same byte stream. This library provides charsets to the JVM platform that can understand both the UTF-8 and the ISO 8859-1, ISO 8859-51, or windows-1252 encodings and choose the one that makes most sense.
 
 ## How do I use it?
 
-This library integrates with the Java charset system. Wherever you would specify a charset, shuch as "UTF-8", you can also choose among one of the following charsets that this library provides:
+This library integrates with the Java charset system. Wherever you would specify a charset, such as "UTF-8", you can also choose among one of the following charsets that this library provides:
 
 * "X-UTF-8_with_ISO-8859-1_fallback"
+* "X-UTF-8_with_ISO-8859-15_fallback"
 * "X-UTF-8_with_windows-1252_fallback"
 
 Note that these charsets can only be used for decoding. An example, using the first one to decode data from an InputStream:
@@ -29,14 +30,14 @@ You can either download it manually or let Maven (or a Maven based build tool) f
 
 ### Leiningen and Cake
 
-    [se.raek/utf8-with-fallback "1.1.0"]
+    [se.raek/utf8-with-fallback "1.2.0"]
 
 ### Maven
 
     <dependency>
       <groupId>se.raek</groupId>
       <artifactId>utf8-with-fallback</artifactId>
-      <version>1.1.0</version>
+      <version>1.2.0</version>
     </dependency>
 
 You might also need to add the Clojars repo:
@@ -46,8 +47,17 @@ You might also need to add the Clojars repo:
       <url>http://clojars.org/repo</url>
     </repository>
 
-### Version History
+## Limitations
 
+In rare circumstances, text encoded in one of the fallback charsets can be valid UTF-8, leading to wrongly decoded text. Example:
+
+* Original text: `å½¤`
+* Encoded in ISO 8859-1: `E5 BD A4`
+* Decoded in UTF-8: `彤` (`\u5F64`)
+
+## Version History
+
+* 1.2.0 - Bugfixes and support for ISO 8859-15 (Java 8+)
 * 1.1.0 - Bugfixes and support for windows-1252
 * 1.0.0 - Initial version
 

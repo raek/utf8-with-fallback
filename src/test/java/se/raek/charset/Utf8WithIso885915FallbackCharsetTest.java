@@ -1,21 +1,21 @@
 package se.raek.charset;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class Utf8WithWindows1252FallbackCharsetTest {
+public class Utf8WithIso885915FallbackCharsetTest {
 	private Charset charset;
 
 	@Before
 	public void setUp() {
-		charset = new Utf8WithWindows1252FallbackCharset();
+		charset = new Utf8WithIso885915FallbackCharset();
 	}
 
 	@Test
