@@ -28,7 +28,7 @@ You can either download it manually or let Maven (or a Maven based build tool) f
 
     https://github.com/raek/utf8-with-fallback/archives/master
 
-### Leiningen and Cake
+### Leiningen
 
     [se.raek/utf8-with-fallback "1.2.0"]
 
