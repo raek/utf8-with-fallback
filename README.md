@@ -4,7 +4,7 @@ Current version: v1.2.0
 
 ## What is this?
 
-Sometimes in protocols and formats such as IRC and bad HTML, pieces of text with different encoding are mixed in the same byte stream. This library provides charsets to the JVM platform that can understand both the UTF-8 and the ISO 8859-1, ISO 8859-51, or windows-1252 encodings and choose the one that makes most sense.
+Sometimes in protocols and formats such as IRC and bad HTML, pieces of text with different encoding are mixed in the same byte stream. This library provides charsets to the JVM platform that can understand both the UTF-8 and the ISO 8859-1, ISO 8859-15, or windows-1252 encodings and choose the one that makes most sense.
 
 ## How do I use it?
 
