@@ -4,49 +4,48 @@ import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class Utf8WithWindows1252FallbackCharsetTest {
-	
 	private Charset charset;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		charset = new Utf8WithWindows1252FallbackCharset();
 	}
 
 	@Test
-	public void canEncode_always_false() {
+	public void canEncodeAlwaysFalse() {
 		assertFalse(charset.canEncode());
 	}
 
 	@Test
-	public void containsCharset_utf8_true() {
-		assertTrue(charset.contains(Charset.forName("UTF-8")));
+	public void containsCharsetUtf8True() {
+		assertTrue(charset.contains(StandardCharsets.UTF_8));
 	}
 
 	@Test
-	public void displayName_always_notNull() {
+	public void displayNameAlwaysNotNull() {
 		assertNotNull(charset.displayName());
 	}
 
 	@Test
-	public void displayNameLocale_always_notNull() {
+	public void displayNameLocaleAlwaysNotNull() {
 		assertNotNull(charset.displayName(Locale.getDefault()));
 	}
 
 	@Test
-	public void newDecoder_always_correctClass() {
-		CharsetDecoder decoder = charset.newDecoder();
+	public void newDecoderAlwaysCorrectClass() {
+		final CharsetDecoder decoder = charset.newDecoder();
 		assertEquals(Utf8WithFallbackCharsetDecoder.class, decoder.getClass());
 	}
 
 	@Test(expected=UnsupportedOperationException.class)
-	public void newEncoder_always_exceptionThrown() {
+	public void newEncoderAlwaysExceptionThrown() {
 		charset.newEncoder();
 	}
-
 }
