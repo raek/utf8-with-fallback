@@ -1,5 +1,8 @@
 package se.raek.charset;
 
+/**
+ * Fallback decoder using ISO 8859-15.
+ */
 public final class Iso885915ByteDecoder implements NonAsciiByteDecoder {
 	@Override
 	public char decodeByte(final byte b) {

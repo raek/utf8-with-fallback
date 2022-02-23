@@ -6,7 +6,14 @@
     <groupId>se.raek</groupId>
     <artifactId>utf8-with-fallback</artifactId>
     <version>1.2.0</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>A Java charset provider for decoding streams that contain mixed UTF-8 and ISO 8859-1/ISO 8859-15/windows-1252 encoded text.</description>
     <url>https://github.com/raek/utf8-with-fallback</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -15,6 +22,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -26,10 +34,49 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <description>A Java charset provider for decoding streams that contain mixed UTF-8 and ISO 8859-1/ISO 8859-15/windows-1252 encoded text
-    </description>
+
     <licenses>
         <license>
             <name>Eclipse Public License 1.0</name>
@@ -42,4 +89,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Rasmus Bondesson</name>
+            <url>http://raek.se</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/raek/utf8-with-fallback.git</connection>
+        <developerConnection>scm:git:ssh://github.com:raek/utf8-with-fallback.git</developerConnection>
+        <url>https://github.com/raek/utf8-with-fallback/tree/master</url>
+    </scm>
 </project>
