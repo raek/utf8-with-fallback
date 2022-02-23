@@ -28,7 +28,7 @@ You can either download it manually or let Maven (or a Maven based build tool) f
 
     https://github.com/raek/utf8-with-fallback/archives/master
 
-### Leiningen and Cake
+### Leiningen
 
     [se.raek/utf8-with-fallback "1.2.0"]
 
@@ -63,6 +63,6 @@ In rare circumstances, text encoded in one of the fallback charsets can be valid
 
 ## License
 
-Copyright (C) 2010 Rasmus Svensson
+Copyright (C) 2010-2022 Rasmus Bondesson and the contributors
 
 This library is distributed under the GNU Lesser General Public License v3.0 (http://www.gnu.org/licenses/lgpl-3.0-standalone.html) and the Eclipse Public License v1.0 (http://www.eclipse.org/org/documents/epl-v10.html).
