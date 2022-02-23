@@ -6,6 +6,11 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+/**
+ * A charset that tries to decode in UTF-8 and falls back to ISO 8859-15 for invalid UTF-8 byte sequences.
+ * Encoding is not supported.
+ * The canonical name is: X-UTF-8_with_ISO-8859-15_fallback
+ */
 public final class Utf8WithIso885915FallbackCharset extends Charset {
 	private static final NonAsciiByteDecoder BYTE_DECODER = new Iso885915ByteDecoder();
 	private static final String CANONICAL_NAME = "X-UTF-8_with_ISO-8859-15_fallback";

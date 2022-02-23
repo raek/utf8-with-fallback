@@ -1,5 +1,8 @@
 package se.raek.charset;
 
+/**
+ * Fallback decoder using windows-1252.
+ */
 public final class Windows1252ByteDecoder implements NonAsciiByteDecoder {
 	private final char[] controlCharReplacements = {
 			'\u20AC', '\u0081', '\u201A', '\u0192', '\u201E', '\u2026', '\u2020', '\u2021',

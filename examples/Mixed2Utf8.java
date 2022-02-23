@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /*
  * Example usage:
@@ -12,27 +10,21 @@ import java.io.OutputStreamWriter;
  */
 
 public class Mixed2Utf8 {
-	
-	public static void main(String[] args) {
-		try {			
-			BufferedReader reader =
-				new BufferedReader(new InputStreamReader(System.in, "X-UTF-8_with_ISO-8859-1_fallback"));
-			BufferedWriter writer =
-				new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
-			
+	public static void main(String[] args) throws IOException {
+		try (InputStreamReader reader = new InputStreamReader(System.in, "X-UTF-8_with_ISO-8859-1_fallback")) {
+			OutputStreamWriter writer = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
+
 			while (true) {
 				int c = reader.read();
-				
-				if (c == -1)
+
+				if (c == -1) {
 					break;
-				
+				}
+
 				writer.write(c);
 			}
-			
+
 			writer.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
-	
 }

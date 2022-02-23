@@ -4,6 +4,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.spi.CharsetProvider;
 import java.util.*;
 
+/**
+ * The charset provider for the charsets in this package.
+ */
 public final class Utf8WithFallbackCharsetProvider extends CharsetProvider {
 	private static final List<Charset> PROVIDED_CHARSETS = Arrays.asList(
 			new Utf8WithIso88591FallbackCharset(),

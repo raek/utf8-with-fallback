@@ -6,6 +6,11 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+/**
+ * A charset that tries to decode in UTF-8 and falls back to windows-1252 for invalid UTF-8 byte sequences.
+ * Encoding is not supported.
+ * The canonical name is: X-UTF-8_with_windows-1252_fallback
+ */
 public final class Utf8WithWindows1252FallbackCharset extends Charset {
 	private static final NonAsciiByteDecoder BYTE_DECODER = new Windows1252ByteDecoder();
 	private static final String CANONICAL_NAME = "X-UTF-8_with_windows-1252_fallback";
